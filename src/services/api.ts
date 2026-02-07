@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   //baseURL: 'https://smart-kiosk-api.onrender.com/api', 
-  baseURL: 'https://smart-kiosk-api.onrender.com/api/Playlist',
+  baseURL: 'https://smart-kiosk-api.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
