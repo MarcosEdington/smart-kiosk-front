@@ -1,0 +1,61 @@
+/* Layout Base */
+body {
+  background-color: #0f172a; /* Azul escuro premium */
+  color: #f8fafc;
+  font-family: 'Inter', sans-serif;
+}
+
+.main-view {
+  margin-left: 280px; /* Espaço da Sidebar */
+  min-height: 100vh;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+/* Sidebar Estilizada */
+.sidebar-premium {
+  width: 280px;
+  height: 100vh;
+  position: fixed;
+  background: #1e293b;
+  border-right: 1px solid #334155;
+  padding: 2rem 1.5rem;
+  z-index: 1000;
+}
+
+/* Cards Premium (Aqueles que você gosta) */
+.card-premium {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+/* Botões e Inputs */
+.form-control {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+.btn-primary {
+  background-color: #3b82f6 !important;
+  border: none !important;
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.5);
+}
+
+.nav-link-custom {
+  color: #94a3b8;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.nav-link-custom:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
