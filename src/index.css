@@ -144,3 +144,32 @@ body {
 @keyframes fadeOut {
   to { opacity: 0; visibility: hidden; }
 }
+
+/* Estilização do input de arquivo do SweetAlert */
+.custom-swal-input-file {
+  background: #252525 !important;
+  border: 2px dashed #444 !important;
+  color: #ffc107 !important;
+  padding: 20px !important;
+  height: auto !important;
+  width: 90% !important;
+  margin: 20px auto !important;
+  transition: all 0.3s;
+}
+
+.custom-swal-input-file:hover {
+  border-color: #ffc107 !important;
+  background: #2a2a2a !important;
+}
+
+/* Estiliza o botão interno do input (Browser dependent) */
+.custom-swal-input-file::-webkit-file-upload-button {
+  background: #ffc107;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  color: #000;
+  font-weight: bold;
+  margin-right: 15px;
+  cursor: pointer;
+}
