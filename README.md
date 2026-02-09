@@ -1,46 +1,35 @@
-# Getting Started with Create React App
+🤖 Smart Kiosk System
+O Smart Kiosk é um ecossistema completo de sinalização digital (Media Indoor). O sistema permite a gestão remota de uma playlist de mídias de alta resolução e a exibição sincronizada em totens ou monitores, com integração de dados em tempo real.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+🚀 Tecnologias Utilizadas
+Front-end (Dashboard): React com TypeScript e Styled Components.
 
-## Available Scripts
+Front-end (Player/Kiosk): JavaScript Vanilla (ES6+), jQuery e CSS3.
 
-In the project directory, you can run:
+Back-end (API): C# .NET 8 com persistência em JSON.
 
-### `npm start`
+Infraestrutura: Hospedado no Render (API) e Netlify (Front-end).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+📋 Funcionalidades Principais
+Gestão de Playlist: Upload de vídeos MP4 e integração de IFrames externos.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Dashboard Administrativo: Monitoramento de status das mídias, tempo total de ciclo e saúde do sistema.
 
-### `npm test`
+Sequenciador Inteligente: Sistema customizado que gerencia o ciclo de vida da mídia (Play/End/Transition) garantindo performance contínua.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Segurança de Interface: Bloqueio de inspeção de código e cópia de dados sensíveis no painel administrativo.
 
-### `npm run build`
+🛠️ Desafio Técnico (Technical Challenge)
+Sincronização de um loop contínuo de mídia de alta resolução e iframes externos. O desafio consistiu em criar um sequenciador customizado que gerencia o ciclo de vida da mídia sem vazamentos de memória (memory leaks), integrado a um ecossistema Full Stack que permite a gestão remota da playlist e consumo de dados em tempo real via APIs públicas, utilizando JSON para persistência ágil de dados.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+💻 Scripts Disponíveis
+No diretório do projeto, você pode rodar:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+npm start
+Roda o Dashboard em modo de desenvolvimento em http://localhost:3000.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+npm run build
+Gera a versão de produção otimizada na pasta build. O código é minificado e os nomes de arquivos incluem hashes para cache inteligente.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+⚙️ Configuração de Ambiente
+Para o funcionamento correto, o front-end deve apontar para a URL da API no Render: BASE_API_URL = "https://smart-kiosk-api.onrender.com"
