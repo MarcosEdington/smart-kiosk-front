@@ -322,7 +322,7 @@ useEffect(() => {
 }, []);
 
  const handleAbrirKioskLocal = () => {
-    const urlFinal = "https://smartkioskview.netlify.app/leme.html";
+    const urlFinal = "https://smartkioskview.vercel.app/leme.html";
 
     Swal.fire({
       title: '<span style="color: #ffc107; font-weight: 900;">VISUALIZAÇÃO DO KIOSK</span>',
