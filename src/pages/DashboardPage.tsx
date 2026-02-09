@@ -68,72 +68,122 @@ const DashboardPage: React.FC<DashboardProps> = ({ onLogout }) => {
   const totalPages = Math.ceil(filteredPlaylist.length / recordsPerPage);
 
   const handleAdicionarVideo = async () => {
-    const { value: file } = await Swal.fire({
-      title: 'UPLOAD DE NOVA MÍDIA',
-      input: 'file',
-      inputAttributes: {
-        'accept': 'video/mp4',
-        'aria-label': 'Selecione o vídeo MP4'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'PRÓXIMO PASSO',
-      confirmButtonColor: '#ffc107',
+  const { value: file } = await Swal.fire({
+    title: '<span style="color: #ffc107; font-weight: 900;">UPLOAD DE MÍDIA</span>',
+    input: 'file',
+    inputAttributes: {
+      'accept': 'video/mp4',
+      'aria-label': 'Selecione o vídeo MP4'
+    },
+    html: `
+      <div style="margin-top: 10px; color: #aaa; font-size: 13px;">
+        Selecione um arquivo <strong style="color: #ffc107;">.MP4</strong> de até <strong>2MB</strong>.
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'VALIDAR ARQUIVO',
+    confirmButtonColor: '#ffc107',
+    cancelButtonText: 'CANCELAR',
+    background: '#1a1a1a',
+    color: '#fff',
+    customClass: {
+      input: 'custom-swal-input-file'
+    },
+    // VALIDAÇÃO EM TEMPO REAL
+    preConfirm: (file) => {
+      if (!file) {
+        Swal.showValidationMessage('Por favor, selecione um arquivo!');
+        return false;
+      }
+      
+      // Validação de Extensão
+      if (!file.name.toLowerCase().endsWith('.mp4')) {
+        Swal.showValidationMessage('Formato inválido! Use apenas .MP4');
+        return false;
+      }
+
+      // Validação de Tamanho (2MB = 2 * 1024 * 1024 bytes)
+      const maxSize = 2 * 1024 * 1024;
+      if (file.size > maxSize) {
+        Swal.showValidationMessage('Arquivo muito grande! Limite de 2MB para o servidor.');
+        return false;
+      }
+
+      return file;
+    }
+  });
+
+  if (file) {
+    const { value: formValues } = await Swal.fire({
+      title: '<span style="color: #ffc107; font-weight: 900;">CONFIGURAÇÕES</span>',
       background: '#1a1a1a',
-      color: '#fff'
+      color: '#fff',
+      html: `
+        <div style="text-align: left; padding: 0 10px;">
+          <label style="color: #888; font-size: 11px; font-weight: bold;">CHAVE DE IDENTIFICAÇÃO</label>
+          <input id="swal-chave" class="swal2-input" placeholder="Ex: PROMO_VERAO" style="background:#252525; color:#fff; border: 1px solid #333;">
+          
+          <label style="color: #888; font-size: 11px; font-weight: bold; margin-top: 15px; display: block;">DURAÇÃO (SEGUNDOS)</label>
+          <input id="swal-duracao" type="number" class="swal2-input" placeholder="Ex: 15" style="background:#252525; color:#fff; border: 1px solid #333;">
+        </div>
+      `,
+      focusConfirm: false,
+      confirmButtonText: 'FINALIZAR E ENVIAR',
+      confirmButtonColor: '#198754',
+      preConfirm: () => {
+        const chave = (document.getElementById('swal-chave') as HTMLInputElement).value;
+        const duracao = (document.getElementById('swal-duracao') as HTMLInputElement).value;
+        
+        if (!chave || !duracao) {
+          Swal.showValidationMessage('Preencha todos os campos!');
+          return false;
+        }
+        return { chave, duracao };
+      }
     });
 
-    if (file) {
-      const { value: formValues } = await Swal.fire({
-        title: 'CONFIGURAÇÕES DA MÍDIA',
-        background: '#1a1a1a',
-        color: '#fff',
-        html: `
-          <input id="swal-chave" class="swal2-input" placeholder="Chave (Ex: PROMO_NATAL)" style="background:#252525; color:#fff;">
-          <input id="swal-duracao" type="number" class="swal2-input" placeholder="Duração em Segundos" style="background:#252525; color:#fff;">
-        `,
-        focusConfirm: false,
-        preConfirm: () => {
-          return {
-            chave: (document.getElementById('swal-chave') as HTMLInputElement).value,
-            duracao: (document.getElementById('swal-duracao') as HTMLInputElement).value
-          }
-        }
-      });
+    if (formValues && formValues.chave) {
+      try {
+        Swal.fire({ 
+          title: 'PROCESSANDO...', 
+          html: 'Estamos enviando seu vídeo para o Render. Por favor, aguarde.',
+          allowOutsideClick: false, 
+          didOpen: () => Swal.showLoading() 
+        });
 
-      if (formValues && formValues.chave) {
-        try {
-          Swal.fire({ title: 'Enviando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        const formData = new FormData();
+        formData.append('videoFile', file);
+        formData.append('chave', formValues.chave);
 
-          // 1. Faz o Upload do arquivo físico
-          const formData = new FormData();
-          formData.append('videoFile', file);
-          formData.append('chave', formValues.chave);
+        const uploadRes = await api.post('/Playlist/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
 
-          const uploadRes = await api.post('/Playlist/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
+        const novoItem = {
+          id: playlist.length > 0 ? Math.max(...playlist.map(p => p.id)) + 1 : 1,
+          chave: formValues.chave,
+          fonte: uploadRes.data.url,
+          tipo: "video",
+          duracao: parseInt(formValues.duracao) * 1000,
+          posicao: playlist.length + 1,
+          ativo: true
+        };
 
-          // 2. Salva o registro no seu JSON/Banco
-          const novoItem = {
-            id: playlist.length > 0 ? Math.max(...playlist.map(p => p.id)) + 1 : 1,
-            chave: formValues.chave,
-            fonte: uploadRes.data.url, // URL retornada pelo C# (videos/nome.mp4)
-            tipo: "video",
-            duracao: parseInt(formValues.duracao) * 1000,
-            posicao: playlist.length + 1,
-            ativo: true
-          };
-
-          await api.post('/Playlist/item', novoItem);
-          
-          Swal.fire('Sucesso!', 'Vídeo enviado e cadastrado.', 'success');
-          loadPlaylist();
-        } catch (error) {
-          Swal.fire('Erro', 'Falha no upload ou cadastro.', 'error');
-        }
+        await api.post('/Playlist/item', novoItem);
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'SUCESSO!',
+          text: 'Vídeo configurado e pronto para o Kiosk.',
+          confirmButtonColor: '#ffc107'
+        });
+        loadPlaylist();
+      } catch (error) {
+        Swal.fire('ERRO', 'O servidor recusou o arquivo ou está offline.', 'error');
       }
     }
-  };
+  }
+};
 
   const handleEditarVideo = async (item: KioskMedia) => {
     // Parsear fonte para preencher campos
